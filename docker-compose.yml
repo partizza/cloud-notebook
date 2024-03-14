@@ -1,0 +1,30 @@
+version: "3.4"
+services:
+
+  minio:
+    image: minio/minio:RELEASE.2024-03-10T02-53-48Z
+    container_name: minio
+    hostname: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    entrypoint: sh
+    command: -c 'mkdir -p /data/audio-resources && minio server /data --console-address ":9001"'
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    networks:
+      - cloud_notebook_net
+
+  audio-service:
+    build:
+      context: ./audio-service
+      dockerfile: Dockerfile
+    image: cloud.notebook/audio-service:1
+    ports:
+      - "8080:8080"
+    networks:
+      - cloud_notebook_net
+
+networks:
+  cloud_notebook_net:
