@@ -4,3 +4,22 @@ server:
 spring:
   application:
     name: audio-service
+
+  datasource:
+    driver-class-name: "org.postgresql.Driver"
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  cloud:
+    aws:
+      s3:
+        path-style-access-enabled: true
+
+notebook:
+  audio:
+    service:
+      s3:
+        bucket: "audio-resources"
+        prefix: "/audio"

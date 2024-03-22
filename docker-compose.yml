@@ -21,8 +21,30 @@ services:
       context: ./audio-service
       dockerfile: Dockerfile
     image: cloud.notebook/audio-service:1
+    depends_on:
+      audio-db:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://audio-pstg-db:5432/audio_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_CLOUD_AWS_S3_ENDPOINT: "http://minio:9000"
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      AWS_REGION: us-east-1
     ports:
       - "8080:8080"
+    networks:
+      - cloud_notebook_net
+
+  audio-db:
+    image: postgres:15.5-alpine
+    container_name: audio-pstg-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: audio_db
     networks:
       - cloud_notebook_net
 
