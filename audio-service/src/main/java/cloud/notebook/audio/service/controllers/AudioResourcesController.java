@@ -1,22 +1,24 @@
 package cloud.notebook.audio.service.controllers;
 
+import cloud.notebook.audio.service.controllers.records.ErrorInfo;
 import cloud.notebook.audio.service.exceptions.FileUploadException;
 import cloud.notebook.audio.service.storage.StorageService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 
 
 @Log4j2
@@ -59,7 +61,18 @@ public class AudioResourcesController {
             return in.readAllBytes();
 
         } catch (IOException e) {
-            throw new FileUploadException(multipartFile.getName(), e);
+            throw new FileUploadException(multipartFile.getOriginalFilename(), e);
         }
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ErrorInfo> handle(FileUploadException e, HttpServletRequest req) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorInfo.builder()
+                        .timestamp(LocalDateTime.now())
+                        .path(req.getRequestURI())
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .error(e.getMessage())
+                        .build());
     }
 }
