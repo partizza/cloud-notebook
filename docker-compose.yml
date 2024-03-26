@@ -1,6 +1,20 @@
 version: "3.4"
 services:
 
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: cn_localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - SERVICES=sns,sqs
+    volumes:
+      - ./localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+    networks:
+      cloud_notebook_net:
+        ipv4_address: 172.22.2.2
+
   minio:
     image: minio/minio:RELEASE.2024-03-10T02-53-48Z
     container_name: minio
@@ -50,3 +64,7 @@ services:
 
 networks:
   cloud_notebook_net:
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+          ip_range: 172.22.5.0/24
