@@ -42,10 +42,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://audio-pstg-db:5432/audio_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_CLOUD_AWS_ENDPOINT: "http://172.22.2.2:4566"
       SPRING_CLOUD_AWS_S3_ENDPOINT: "http://minio:9000"
       AWS_ACCESS_KEY_ID: minio
       AWS_SECRET_ACCESS_KEY: minio123
       AWS_REGION: us-east-1
+      NOTEBOOK_AUDIO_SERVICE_S3_BUCKET: audio-resources
+      NOTEBOOK_AUDIO_SERVICE_STOREDAUDIOTOPIC_NAME: stored-audio-sns
     ports:
       - "8080:8080"
     networks:

@@ -30,7 +30,7 @@ class AudioResourcesControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockBean(name = "storedAudioNotificationStorage")
     private StorageService storageServiceMock;
 
     @Test

@@ -23,3 +23,5 @@ notebook:
       s3:
         bucket: "audio-resources"
         prefix: "/audio"
+      storedAudioTopic:
+        name: "stored-audio-sns"
