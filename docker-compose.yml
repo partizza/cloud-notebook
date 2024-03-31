@@ -48,7 +48,7 @@ services:
       AWS_SECRET_ACCESS_KEY: minio123
       AWS_REGION: us-east-1
       NOTEBOOK_AUDIO_SERVICE_S3_BUCKET: audio-resources
-      NOTEBOOK_AUDIO_SERVICE_STOREDAUDIOTOPIC_NAME: stored-audio-sns
+      NOTEBOOK_AUDIO_SERVICE_SNS_NAME: stored-audio-sns
     ports:
       - "8080:8080"
     networks:

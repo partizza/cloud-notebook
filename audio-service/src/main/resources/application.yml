@@ -16,12 +16,3 @@ spring:
     aws:
       s3:
         path-style-access-enabled: true
-
-notebook:
-  audio:
-    service:
-      s3:
-        bucket: "audio-resources"
-        prefix: "/audio"
-      storedAudioTopic:
-        name: "stored-audio-sns"

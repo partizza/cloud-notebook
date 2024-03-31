@@ -1,6 +1,7 @@
 package cloud.notebook.audio.service.storage.impl;
 
 
+import cloud.notebook.audio.service.aws.s3.S3Properties;
 import cloud.notebook.audio.service.db.entries.StorageReference;
 import cloud.notebook.audio.service.db.repositories.StorageReferenceRepository;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CommonS3ReferenceServiceTest {
 
-    private static final String PREFIX = "/test/prefix";
+    private static final S3Properties S3_PROPS = new S3Properties("buck", "/test/prefix");
 
     @Mock
     private StorageReferenceRepository repositoryMock;
@@ -27,7 +28,7 @@ class CommonS3ReferenceServiceTest {
 
     @Test
     void shouldFailGenerateOnNull() {
-        CommonS3ReferenceService sut = new CommonS3ReferenceService(PREFIX, repositoryMock);
+        CommonS3ReferenceService sut = new CommonS3ReferenceService(S3_PROPS, repositoryMock);
         assertThrows(IllegalArgumentException.class, () -> sut.generate(null));
     }
 
@@ -36,7 +37,7 @@ class CommonS3ReferenceServiceTest {
         String uuid = UUID.randomUUID().toString();
         LocalDate now = LocalDate.now();
 
-        String expectedKey = Path.of(PREFIX)
+        String expectedKey = Path.of(S3_PROPS.prefix())
                 .resolve(String.valueOf(now.getYear()))
                 .resolve(String.valueOf(now.getMonthValue()))
                 .resolve(String.valueOf(now.getDayOfMonth()))
@@ -47,7 +48,7 @@ class CommonS3ReferenceServiceTest {
         when(repositoryMock.save(storageReference)).thenReturn(storageReference);
 
 
-        CommonS3ReferenceService sut = new CommonS3ReferenceService(PREFIX, repositoryMock);
+        CommonS3ReferenceService sut = new CommonS3ReferenceService(S3_PROPS, repositoryMock);
         String result = sut.generate(uuid);
 
         assertEquals(expectedKey, result);
@@ -60,7 +61,7 @@ class CommonS3ReferenceServiceTest {
         StorageReference storageReference = new StorageReference(uuid, "/s3key/path");
         when(repositoryMock.findById(uuid)).thenReturn(Optional.of(storageReference));
 
-        CommonS3ReferenceService sut = new CommonS3ReferenceService(PREFIX, repositoryMock);
+        CommonS3ReferenceService sut = new CommonS3ReferenceService(S3_PROPS, repositoryMock);
         Optional<String> result = sut.get(uuid);
 
         assertTrue(result.isPresent());
@@ -72,7 +73,7 @@ class CommonS3ReferenceServiceTest {
         String uuid = UUID.randomUUID().toString();
         when(repositoryMock.findById(uuid)).thenReturn(Optional.empty());
 
-        CommonS3ReferenceService sut = new CommonS3ReferenceService(PREFIX, repositoryMock);
+        CommonS3ReferenceService sut = new CommonS3ReferenceService(S3_PROPS, repositoryMock);
         Optional<String> result = sut.get(uuid);
 
         assertTrue(result.isEmpty());
@@ -80,7 +81,7 @@ class CommonS3ReferenceServiceTest {
 
     @Test
     void shouldFailGetOnNull() {
-        CommonS3ReferenceService sut = new CommonS3ReferenceService(PREFIX, repositoryMock);
+        CommonS3ReferenceService sut = new CommonS3ReferenceService(S3_PROPS, repositoryMock);
         assertThrows(IllegalArgumentException.class, () -> sut.get(null));
     }
 }

@@ -18,7 +18,7 @@ public class CommonStoredAudioSnsService implements StoredAudioSnsService {
 
     @Autowired
     public CommonStoredAudioSnsService(@NonNull SnsOperations snsOperations,
-                                       @NonNull @Value("${notebook.audio.service.storedAudioTopic.name}") String topicName) {
+                                       @NonNull @Value("${notebook.audio.service.sns.name:stored-audio-sns}") String topicName) {
         this.snsOperations = snsOperations;
         this.topicName = topicName;
     }
