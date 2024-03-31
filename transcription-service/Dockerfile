@@ -11,4 +11,4 @@ RUN mkdir -p /opt/transcription-service-app
 
 COPY --from=service_builder /src/transcription-service/build/install/transcription-service /opt/transcription-service-app
 
-CMD ["/opt/transcription-service-app/bin/transcription-service"]
+ENTRYPOINT ["/opt/transcription-service-app/bin/transcription-service"]
