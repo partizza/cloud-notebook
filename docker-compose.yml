@@ -76,6 +76,9 @@ services:
     environment:
       SPRING_CLOUD_AWS_ENDPOINT: "http://172.22.2.2:4566"
       AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      NOTEBOOK_TRANSCRIPTION_SQS_NAME: audio-transcription-sqs
     networks:
       - cloud_notebook_net
 
