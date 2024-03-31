@@ -64,6 +64,20 @@ services:
       POSTGRES_DB: audio_db
     networks:
       - cloud_notebook_net
+        
+  transcription-service:
+    build:
+      context: ./transcription-service
+      dockerfile: Dockerfile
+    image: cloud.notebook/transcription-service:1
+    depends_on:
+      localstack:
+        condition: service_started
+    environment:
+      SPRING_CLOUD_AWS_ENDPOINT: "http://172.22.2.2:4566"
+      AWS_REGION: us-east-1
+    networks:
+      - cloud_notebook_net
 
 networks:
   cloud_notebook_net:
