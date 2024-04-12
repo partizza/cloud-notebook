@@ -11,6 +11,8 @@ services:
       - SERVICES=sns,sqs
     volumes:
       - ./localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:4566/_localstack/init/ready | grep -q '\"completed\": true'"]
     networks:
       cloud_notebook_net:
         ipv4_address: 172.22.2.2
@@ -75,13 +77,15 @@ services:
     image: cloud.notebook/transcription-service:1
     depends_on:
       localstack:
-        condition: service_started
+        condition: service_healthy
     environment:
       SPRING_CLOUD_AWS_ENDPOINT: "http://172.22.2.2:4566"
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: minio
       AWS_SECRET_ACCESS_KEY: minio123
       NOTEBOOK_TRANSCRIPTION_SQS_NAME: audio-transcription-sqs
+      NOTEBOOK_AUDIO_SERVICE_ENDPOINT: "http://audio-service:8080"
+      NOTEBOOK_OPENAI_KEY: ${OPENAI_API_KEY}
     networks:
       - cloud_notebook_net
 
