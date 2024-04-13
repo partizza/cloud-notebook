@@ -16,6 +16,16 @@ services:
     networks:
       cloud_notebook_net:
         ipv4_address: 172.22.2.2
+  
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: cloud.notebook/api-gateway:1
+    ports:
+      - "8080:8080"
+    networks:
+      - cloud_notebook_net
 
   minio:
     image: minio/minio:RELEASE.2024-03-10T02-53-48Z
@@ -54,8 +64,6 @@ services:
       AWS_REGION: us-east-1
       NOTEBOOK_AUDIO_SERVICE_S3_BUCKET: audio-resources
       NOTEBOOK_AUDIO_SERVICE_SNS_NAME: stored-audio-sns
-    ports:
-      - "8080:8080"
     networks:
       - cloud_notebook_net
 
