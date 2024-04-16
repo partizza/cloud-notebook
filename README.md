@@ -21,3 +21,10 @@ docker-compose up --build
 ```shell
 curl http://localhost:8080/audio -F file=@your_audio_file_path
 ```
+
+#
+> [!TIP]
+> **Get transcript by audio id:**
+```shell
+curl http://localhost:8080/transcript/{audio-id-here}
+```
