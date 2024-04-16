@@ -21,6 +21,7 @@ public class ApiGatewayApplication {
     public RouterFunction<ServerResponse> route() {
         return GatewayRouterFunctions.route("audio-service")
                 .route(path("/audio/**"), http("http://audio-service:8080"))
+                .route(path("/transcript/**"), http("http://transcript-service:8080"))
                 .build();
     }
 

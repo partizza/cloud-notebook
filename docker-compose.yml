@@ -53,6 +53,8 @@ services:
     depends_on:
       audio-db:
         condition: service_started
+      minio:
+        condition: service_started  
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://audio-pstg-db:5432/audio_db
       SPRING_DATASOURCE_USERNAME: postgres
@@ -94,6 +96,24 @@ services:
       NOTEBOOK_TRANSCRIPTION_SQS_NAME: audio-transcription-sqs
       NOTEBOOK_AUDIO_SERVICE_ENDPOINT: "http://audio-service:8080"
       NOTEBOOK_OPENAI_KEY: ${OPENAI_API_KEY}
+      NOTEBOOK_TRANSCRIPT_SERVICE_ENDPOINT: "http://transcript-service:8080"
+    networks:
+      - cloud_notebook_net
+        
+  transcript-service:
+    build:
+      context: ./transcript-service
+      dockerfile: Dockerfile
+    image: cloud.notebook/transcript-service:1
+    depends_on:
+      minio:
+        condition: service_started
+    environment:
+      SPRING_CLOUD_AWS_S3_ENDPOINT: "http://minio:9000"
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      AWS_REGION: us-east-1
+      NOTEBOOK_TRANSCRIPT_SERVICE_S3_BUCKET: audio-resources
     networks:
       - cloud_notebook_net
 
